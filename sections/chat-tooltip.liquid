@@ -1,0 +1,520 @@
+{% liquid
+  for block in section.blocks
+    case block.type
+      when 'Social-WA'
+        assign WhatsappBG = block.settings['btn-bg-wa-color']
+      when 'Social-IG'
+        assign IG-BG = block.settings['btn-bg-ig-color']
+      when 'Social-Call'
+        assign Call-BG = block.settings['btn-bg-call-color']
+      when 'Social-Email'
+        assign Email-BG = block.settings['btn-bg-email-color']
+      when 'Social-X'
+        assign X-BG = block.settings['btn-bg-x-color']
+      when 'Social-FB'
+        assign FB-BG = block.settings['btn-bg-fb-color']
+    endcase
+  endfor
+%}
+
+<style>
+      #sy-whatshelp {
+        right: {{ section.settings.right }}px;
+        bottom: {{ section.settings.bottom }}px;
+        position: fixed;
+        z-index: 99;
+      }
+
+      #sy-whatshelp a {
+        position: relative;
+      }
+
+      #sy-whatshelp a.sywh-open-services {
+        background-color: {{section.settings.btn-bg-color}};
+        color: {{section.settings.btn-icon-color}};
+        line-height: 55px;
+        margin-top: 10px;
+        border: none;
+        cursor: pointer;
+        font-size: 23px;
+        width: 55px;
+        height: 55px;
+        text-align: center;
+        box-shadow: 2px 2px 8px -3px #000;
+        border-radius: 100%;
+        display: inline-block;
+      }
+
+      #sy-whatshelp a.sywh-open-services i {
+        line-height: 55px;
+      }
+
+      #sy-whatshelp a.sywh-open-services i.fa-times {
+        display: none;
+      }
+
+      #sy-whatshelp .sywh-services {
+        width: 55px;
+        height: auto;
+      }
+
+      #sy-whatshelp .sywh-services a {
+        display: none;
+      }
+
+      #sy-whatshelp .sywh-services a i {
+        background-color: #129bf4;
+        color: #fff;
+        line-height: 55px;
+        margin-top: 10px;
+        border: none;
+        cursor: pointer;
+        font-size: 23px;
+        width: 55px;
+        height: 55px;
+        text-align: center;
+        box-shadow: 2px 2px 8px -3px #000;
+        border-radius: 100%;
+      }
+
+      /* Additional colors for different social icons */
+      #sy-whatshelp .sywh-services a.email i {
+        background-color: {{Email-BG}};
+      }
+
+      #sy-whatshelp .sywh-services a.instagram i {
+        background-color: {{IG-BG}};
+      }
+
+      #sy-whatshelp .sywh-services a.messenger i {
+        background-color: {{FB-BG}};
+      }
+
+      #sy-whatshelp .sywh-services a.whatsapp i {
+        background-color: {{ WhatsappBG }};
+      }
+
+      #sy-whatshelp .sywh-services a.call i {
+        background-color:  {{Call-BG}} ;
+      }
+      #sy-whatshelp .sywh-services a.x i {
+        background-color:  {{X-BG}};
+      }
+  {% if section.settings.tooltip-enable %}
+      /* Tooltip styling */
+      a[data-tooltip] {
+      position: relative;
+    }
+
+    a[data-tooltip]::before
+     {
+      position: absolute;
+      display: none;
+      opacity: 0.85;
+      transition: all 0.3s ease-in-out;
+    }
+
+    a[data-tooltip]::before {
+      content: attr(data-tooltip);
+      background: #000;
+      color: #fff;
+      font-size: 13px;
+      padding: 7px 11px;
+      border-radius: 5px;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+
+
+
+    a[data-tooltip]:hover::before
+     {
+      display: block;
+    }
+
+    a.sywh-open-services[data-tooltip]::before,
+    {
+      display: block;
+    }
+
+    a.data-tooltip-hide[data-tooltip]::before,
+     {
+      display: none !important;
+    }
+
+    a.sywh-open-services[data-tooltip][data-placement="left"]::before {
+      top: 11px;
+    }
+
+    a[data-tooltip][data-placement="left"]::before {
+      top: -7px;
+      right: 100%;
+      line-height: normal;
+      margin-right: 10px;
+    }
+
+
+
+    a[data-tooltip][data-placement="right"]::before {
+      top: -7px;
+      left: 100%;
+      line-height: normal;
+      margin-left: 10px;
+    }
+
+
+
+    a[data-tooltip][data-placement="top"]::before {
+      bottom: 100%;
+      left: 0;
+      margin-bottom: 10px;
+    }
+
+
+    a[data-tooltip][data-placement="bottom"]::before {
+      top: 100%;
+      left: 0;
+      margin-top: 10px;
+    }
+    {% endif%}
+</style>
+{% comment %} This script is needed to stop fontawesome from converting I tag to SVG {% endcomment %}
+<script>
+  window.FontAwesomeConfig = { autoReplaceSvg: false };
+</script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
+
+<div id="sy-whatshelp">
+  <div class="sywh-services">
+    {% for block in section.blocks %}
+      {% case block.type %}
+        {% when 'Social-WA' %}
+          {% if request.page_type == 'product' and block.settings.product_title %}
+            <a
+              href="https://wa.me/{{ block.settings.wa_num | remove: ' ' }}?text={{ block.settings.pre_text | url_encode }} + {{ product.title }}"
+              class="whatsapp"
+              data-tooltip="WhatsApp"
+              data-placement="{{section.settings.tootip-position}}"
+              target="_blank"
+            >
+              <i class="fa-brands fa-whatsapp"></i>
+            </a>
+          {% else %}
+            <a
+              href="https://wa.me/{{ block.settings.wa_num | remove: ' ' }}?text={{ block.settings.pre_text | url_encode }}"
+              class="whatsapp"
+              data-tooltip="WhatsApp"
+              data-placement="{{section.settings.tootip-position}}"
+              target="_blank"
+            >
+              <i class="fa-brands fa-whatsapp"></i>
+            </a>
+          {% endif %}
+        {% when 'Social-IG' %}
+          <a
+            href="{{ block.settings.Ig_url }}"
+            class="instagram"
+            data-tooltip="Instagram"
+            data-placement="{{section.settings.tootip-position}}"
+            target="_blank"
+          >
+            <i class="fa-brands fa-instagram"></i>
+          </a>
+        {% when 'Social-Call' %}
+          <a
+            href="tel:{{ block.settings.call_num }}"
+            class="call"
+            data-tooltip="Call"
+            data-placement="{{section.settings.tootip-position}}"
+          >
+            <i class="fa fa-phone"></i>
+          </a>
+        {% when 'Social-Email' %}
+          <a
+            href="mailto:{{ block.settings.email_address }}"
+            class="email"
+            data-tooltip="Email"
+            data-placement="{{section.settings.tootip-position}}"
+          >
+            <i class="fa fa-envelope"></i>
+          </a>
+        {% when 'Social-FB' %}
+          <a
+            href="{{ block.settings.fb_url }}"
+            class="facebook"
+            data-tooltip="Facebook"
+            data-placement="{{section.settings.tootip-position}}"
+            target="_blank"
+          >
+            <i class="fa-brands fa-facebook"></i>
+            {% comment %} <i class="fa fa-facebook"></i> {% endcomment %}
+          </a>
+        {% when 'Social-X' %}
+          <a
+            href="{{ block.settings.x_url }}"
+            class="x"
+            data-tooltip="x"
+            data-placement="{{section.settings.tootip-position}}"
+            target="_blank"
+          >
+            <i class="fa-brands fa-x-twitter"></i>
+          </a>
+      {% endcase %}
+    {% endfor %}
+  </div>
+  <a
+    class="sywh-open-services"
+    data-tooltip="{{ section.settings.tooltip-chat }}"
+    data-placement="{{section.settings.tootip-position}}"
+  >
+    <i class="fa fa-comments"></i>
+    <i class="fa fa-times"></i>
+  </a>
+</div>
+
+<script
+  src="https://code.jquery.com/jquery-3.7.1.js"
+  integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+  crossorigin="anonymous"
+></script>
+<script defer>
+  jQuery(function ($) {
+    $('a.sywh-open-services').click(function () {
+      if ($('.sywh-services').hasClass('active')) {
+        $('.sywh-services').removeClass('active');
+        $('a.sywh-open-services i.fa-times').hide();
+        $('a.sywh-open-services i.fa-comments').show();
+        $('a.sywh-open-services').removeClass('data-tooltip-hide');
+        $('.sywh-services a').each(function (index) {
+          $(this)
+            .delay(index * 100)
+            .fadeOut();
+        });
+      } else {
+        $('.sywh-services').addClass('active');
+        $('a.sywh-open-services i.fa-comments').hide();
+        $('a.sywh-open-services i.fa-times').show();
+        $('a.sywh-open-services').addClass('data-tooltip-hide');
+        $('.sywh-services a').each(function (index) {
+          $(this)
+            .delay(index * 100)
+            .fadeIn();
+        });
+      }
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Chat Tooltip",
+  "settings": [
+    {
+      "type": "range",
+      "id": "bottom",
+      "label": "Bottom PX",
+      "default": 26,
+      "min": 0,
+      "max": 200,
+      "step": 2
+    },
+    {
+      "type": "range",
+      "id": "right",
+      "label": "Right PX",
+      "default": 26,
+      "min": 0,
+      "max": 200,
+      "step": 2
+    },
+    {
+      "type": "text",
+      "default": "Contact Us",
+      "id": "tooltip-chat",
+      "label": "Message for Customers"
+    },
+
+    {
+      "type": "color",
+      "default": "#129bf4",
+      "id": "btn-bg-color",
+      "label": "Button Bg-Color"
+    },
+
+    {
+      "type": "color",
+      "default": "#fff",
+      "id": "btn-icon-color",
+      "label": "Button Icon-Color"
+    },
+    {
+      "type": "checkbox",
+      "default": true,
+      "id": "tooltip-enable",
+      "label": "Enable Tootip"
+    },
+    {
+      "type": "select",
+      "default": "left",
+      "id": "tootip-position",
+      "label": "Tooltip Position",
+      "options": [
+        {
+          "label": "Left",
+          "value": "left"
+        },
+        {
+          "label": "Top",
+          "value": "top"
+        },
+        {
+          "label": "Bottom",
+          "value": "bottom"
+        },
+        {
+          "label": "Right",
+          "value": "right"
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "Social-WA",
+      "name": "WhatsApp",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "wa_num",
+          "label": "WhatsApp Number",
+          "default": "+911234567890",
+          "info": "Include country code without spaces"
+        },
+        {
+          "type": "text",
+          "id": "pre_text",
+          "label": "Predefined Text",
+          "default": "Is someone available to chat ??"
+        },
+        {
+          "type": "checkbox",
+          "default": true,
+          "id": "product_title",
+          "label": "Fill Product Title"
+        },
+        {
+          "type": "color",
+          "default": "#25d366",
+          "id": "btn-bg-wa-color",
+          "label": "Button BG-Color"
+        }
+      ]
+    },
+    {
+      "type": "Social-IG",
+      "name": "Instagram",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "url",
+          "id": "Ig_url",
+          "label": "Instagram Profile URL"
+        },
+        {
+          "type": "color",
+          "default": "#e4405f",
+          "id": "btn-bg-ig-color",
+          "label": "Button BG-Color"
+        }
+      ]
+    },
+    {
+      "type": "Social-Call",
+      "name": "Call",
+      "limit": 1,
+
+      "settings": [
+        {
+          "type": "text",
+          "id": "call_num",
+          "label": "Phone Number",
+          "default": "+911234567890"
+        },
+        {
+          "type": "color",
+          "default": "#ff6600",
+          "id": "btn-bg-call-color",
+          "label": "Button BG-Color"
+        }
+      ]
+    },
+    {
+      "type": "Social-Email",
+      "name": "Email",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "email_address",
+          "label": "Email Address",
+          "placeholder": "default@support.com",
+          "default": "default@support.com"
+        },
+        {
+          "type": "color",
+          "default": "#b92b27",
+          "id": "btn-bg-email-color",
+          "label": "Button BG-Color"
+        }
+      ]
+    },
+    {
+      "type": "Social-FB",
+      "name": "Facebook",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "url",
+          "id": "fb_url",
+          "label": "Facebook URL"
+        },
+        {
+          "type": "color",
+          "default": "#129bf4",
+          "id": "btn-bg-fb-color",
+          "label": "Button BG-Color"
+        }
+      ]
+    },
+    {
+      "type": "Social-X",
+      "name": "X",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "url",
+          "id": "x_url",
+          "label": "X URL"
+        },
+        {
+          "type": "color",
+          "default": "#000000",
+          "id": "btn-bg-x-color",
+          "label": "Button BG-Color"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Chat-Tooltip",
+      "blocks": [
+        {
+          "type": "Social-WA"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
